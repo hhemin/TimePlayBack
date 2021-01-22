@@ -1,6 +1,9 @@
-# back
+# vue3 TimePlayBack
 
+## 介绍
+一个“时间管理”后台项目；技术主要用`vue3+typescript+element-plus+scss` 进行页面部署开发
 
+采用node开发[接口地址](https://github.com/hhemin/TimePlayServe)
 ## 创建 
 vue ui
 
@@ -33,3 +36,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ## scss 配置
 yarn add node-sass
 yarn add sass-loader
+
+
