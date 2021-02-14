@@ -10,12 +10,17 @@
 import { defineComponent, ref } from "vue";
 import FullAlter from "@/components/fullalter.vue";
 import EditorForm from "./editorForm.vue";
+interface editorData {
+  AlterFull: any;
+  addFn: () => void;
+  closeFn: () => void;
+}
 export default defineComponent({
   components: {
     FullAlter,
     EditorForm,
   },
-  setup() {
+  setup(): editorData {
     const AlterFull: any = ref<HTMLElement | null>(null);
     //  打开窗口
     const addFn = () => {

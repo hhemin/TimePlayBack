@@ -32,7 +32,7 @@
 import { defineComponent, reactive, ref, computed } from "vue";
 import { LoginParamsType } from "./data.d";
 import { ElForm, ElMessage } from "element-plus";
-
+import { Login } from "@/utils/api";
 interface UserLoginSetupData {
   modelRef: LoginParamsType;
   formRef: typeof ElForm;
@@ -73,6 +73,9 @@ export default defineComponent({
     const handleSubmit = async () => {
       submitLoading.value = true;
       const valid: boolean | undefined = await formRef.value?.validate();
+      Login(modelRef).then((res: any) => {
+        console.log(res);
+      });
       // try {
       //   // const valid: boolean | undefined = await formRef.value ? .validate();
       //   // if (valid === true) {

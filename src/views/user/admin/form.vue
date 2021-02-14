@@ -7,8 +7,8 @@
     label-width="100px"
     class="demo-ruleForm"
   >
-    <el-form-item label="用户名" prop="name">
-      <el-input v-model="Form.name"></el-input>
+    <el-form-item label="用户名" prop="username">
+      <el-input v-model="Form.username"></el-input>
     </el-form-item>
     <el-form-item label="密码" prop="password">
       <el-input type="password" v-model="Form.password" autocomplete="off"></el-input>
@@ -25,8 +25,9 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
-import { formDataType } from "./form";
+import { formDataType } from "./form.d";
 import { validateVPassword } from "@/assets/ts/validate";
+import { AddUser } from "@/utils/api";
 interface formData {
   Form: formDataType;
   rules: any;
@@ -40,7 +41,7 @@ export default defineComponent({
     const Form = reactive<formDataType>({
       password: "",
       checkPass: "",
-      name: "",
+      username: "",
     });
     const getForm = ref(Form); // 转换获取
 
@@ -84,23 +85,42 @@ export default defineComponent({
           required: true,
         },
       ],
-      name: [
+      username: [
         {
           validator: checkName,
           required: true,
         },
+        { min: 6, max: 30, message: "长度在 6 到 30 个字符", trigger: "blur" },
       ],
     });
     // 提交
-    const submitForm = () => {
-      ruleForm.value.validate((valid: any) => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+    const submitForm = async () => {
+      const valid: boolean | undefined = await ruleForm.value?.validate();
+      // const _data = {
+      //   username: Form.value.username,
+      //   password: Form.value.password,
+      // };
+      console.log(Form);
+      AddUser(Form)
+        .then((res: any) => {
+          console.log(res);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+      // ruleForm.value.validate((valid: any) => {
+      //   if (valid) {
+      //     // console.log(Form);
+      //     const _data = {
+      //       username: Form.value.username,
+      //       password: Form.value.password,
+      //     };
+
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
     };
     // 重置
     const resetForm = () => {

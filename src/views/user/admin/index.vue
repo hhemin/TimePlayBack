@@ -13,7 +13,7 @@
     @handleSelectionChange="handleSelectionChange"
   ></ELTable>
   <footer>
-    <Pagination :total="100000" class=""></Pagination>
+    <Pagination :total="100000" class="" v-model:currentPage="currentPage"></Pagination>
   </footer>
   <Editor ref="editorDom" :editorData="editorData"></Editor>
 </template>
@@ -22,7 +22,7 @@
 /**
  * @name 管理用户
  * */
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, toRef } from "vue";
 import Sreach from "@/components/sreach.vue";
 import ELTable from "@/components/table/table.vue";
 import Pagination from "@/components/pagination/pagination.vue";
@@ -39,6 +39,7 @@ interface costomerData {
   handleSelectionChange: () => void;
   editorDom: any;
   editorData: object;
+  currentPage: number;
 }
 export default defineComponent({
   components: {
@@ -51,7 +52,7 @@ export default defineComponent({
   setup(): costomerData {
     const editorDom: any = ref<HTMLElement | null>(null);
     const editorData: object = reactive({});
-
+    const currentPage = ref<number>(1);
     const tableData = reactive([
       {
         usr: "yy",
@@ -95,7 +96,7 @@ export default defineComponent({
         label: "公司名称",
         param: "company",
         align: "center",
-        show: false,
+        show: true,
       },
       {
         label: "办公邮箱",
@@ -194,6 +195,7 @@ export default defineComponent({
       handleSelectionChange,
       editorDom,
       editorData,
+      currentPage: (currentPage as unknown) as number,
     };
   },
 });
