@@ -30,7 +30,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props: any): sreachData {
+  setup(props: any, { emit }: { emit: any }): sreachData {
     const select = ref<string>(""); // 选择
     const sreach = ref<string>(""); // 搜索
     onMounted(() => {
@@ -38,6 +38,7 @@ export default defineComponent({
     });
     const sreachFN = () => {
       console.log(sreach.value);
+      emit("Getsreach", sreach.value);
     };
     return {
       select: (select as unknown) as string,

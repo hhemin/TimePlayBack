@@ -1,3 +1,4 @@
+import { routerKey } from 'vue-router';
 import Axios from './axios';
 
 /**
@@ -13,6 +14,11 @@ interface LoginParams {
 interface AddUserParams {
   username: string
   password: string
+}
+
+interface GetUserParams {
+  curPage: number,
+  pageSize: number,
 }
 // 登录
 const Login = async (params: LoginParams) => {
@@ -31,8 +37,16 @@ const AddUser = async (params:AddUserParams) => {
     data: params
   })
 }
-
+// 加载管理员列表
+const GetList = async (params:GetUserParams) => {
+  return Axios('/admin/list',{
+    method: 'post',
+    responseType: 'json',
+    data: params
+  })
+}
 export {
   Login,
-  AddUser
+  AddUser,
+  GetList
 }

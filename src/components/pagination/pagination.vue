@@ -27,7 +27,7 @@ export default defineComponent({
     // 每页显示条目个数
     pagesize: {
       type: Number,
-      default: 20,
+      default: 10,
     },
     // 总数据条数
     total: {
@@ -38,6 +38,7 @@ export default defineComponent({
     currentPage: {
       type: Number,
       // default: 1,
+      required: true,
     },
     tvalue: {
       type: String,
@@ -45,8 +46,7 @@ export default defineComponent({
   },
   setup(props: any, { emit }: { emit: any }): paginationData {
     const handleSizeChange = (currentPage: number): void => {
-      console.log(currentPage);
-      // emit("update:currentPage", currentPage);
+      emit("changeinfo", currentPage);
     };
     const changfn = (): void => {
       // props.tvalue = "12312312123";

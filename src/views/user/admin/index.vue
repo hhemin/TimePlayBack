@@ -1,7 +1,7 @@
 <template>
   <header>
     <Add class="add"></Add>
-    <Sreach :selectinput="selectinput"></Sreach>
+    <Sreach :selectinput="selectinput" @Getsreach="Getsreach"></Sreach>
   </header>
   <ELTable
     :loading="loading"
@@ -13,21 +13,27 @@
     @handleSelectionChange="handleSelectionChange"
   ></ELTable>
   <footer>
-    <Pagination :total="100000" class="" v-model:currentPage="currentPage"></Pagination>
+    <Pagination
+      :total="total"
+      v-model:currentPage="currentPage"
+      @changeinfo="changeinfo"
+    ></Pagination>
   </footer>
-  <Editor ref="editorDom" :editorData="editorData"></Editor>
+  <Editor ref="editorDom" :editorData="editorData" currentPage=""></Editor>
 </template>
 
 <script lang="ts">
 /**
  * @name 管理用户
  * */
-import { defineComponent, reactive, ref, toRef } from "vue";
+import { defineComponent, reactive, ref, computed, onMounted, ComputedRef } from "vue";
 import Sreach from "@/components/sreach.vue";
 import ELTable from "@/components/table/table.vue";
 import Pagination from "@/components/pagination/pagination.vue";
 import Editor from "./editor.vue";
 import Add from "./add.vue";
+import { useStore } from "vuex";
+import { GET_ADMIN_LIST, PAGE_INFO } from "@/store/modules/admin/type";
 interface costomerData {
   tableData: any;
   loading: boolean;
@@ -40,6 +46,10 @@ interface costomerData {
   editorDom: any;
   editorData: object;
   currentPage: number;
+  pageinfo: any;
+  changeinfo: (value: number) => void;
+  total: any;
+  Getsreach: (value: string) => void;
 }
 export default defineComponent({
   components: {
@@ -50,83 +60,60 @@ export default defineComponent({
     Editor,
   },
   setup(): costomerData {
+    const store = useStore();
+    const pageinfo = computed(() => store.state.admin.pageinfo);
+    const tableData = computed(() => store.state.admin.datalist);
+    const total = computed<number>(() => store.state.admin.total);
     const editorDom: any = ref<HTMLElement | null>(null);
     const editorData: object = reactive({});
     const currentPage = ref<number>(1);
-    const tableData = reactive([
-      {
-        usr: "yy",
-        company: "hahahha",
-        email: "find@allyum.com",
-        registTime: "2019 8",
-        status: "1",
-      },
-      {
-        usr: "aa",
-        company: "hahahha",
-        email: "find@allyum.com",
-        registTime: "2019 8",
-        status: "1",
-      },
-      {
-        usr: "c",
-        company: "hahahha",
-        email: "find@allyum.com",
-        registTime: "2019 8",
-        status: "1",
-      },
-      {
-        usr: "b",
-        company: "hahahha",
-        email: "find@allyum.com",
-        registTime: "2019 8",
-        status: "1",
-      },
-    ]);
-
     const tableLabel = reactive([
       {
         label: "用户名",
-        param: "usr",
-        align: "center",
-        sortable: true,
-        show: true,
-      },
-      {
-        label: "公司名称",
-        param: "company",
+        param: "username",
         align: "center",
         show: true,
       },
       {
-        label: "办公邮箱",
-        param: "email",
+        label: "状态",
+        param: "status",
         align: "center",
         width: "200",
         show: true,
+        render: (row: any) => {
+          if (row.status === 0) {
+            return "停用";
+          } else if (row.status === 1) {
+            return "开启";
+          } else {
+            return "未知";
+          }
+        },
       },
       {
         label: "注册时间",
-        param: "registTime",
+        param: "created_data",
         lign: "center",
         show: true,
-        ortable: true,
       },
       {
-        label: "审核状态",
-        param: "status",
+        label: "更新时间",
+        param: "updata_data",
+        lign: "center",
+        show: true,
+      },
+      {
+        label: "角色",
+        param: "level_id",
         align: "center",
         show: true,
-        sortable: true,
         render: (row: any) => {
-          if (row.status === 0) {
-            return "未审核";
-          } else if (row.status === 1) {
-            return "审核通过";
-          } else if (row.status === 2) {
-            return "审核不通过";
+          if (row.level_id === 1) {
+            return "超级管理员";
+          } else if (row.level_id === 2) {
+            return "普通管理员";
           } else {
-            return "禁用";
+            return "未知";
           }
         },
       },
@@ -157,10 +144,10 @@ export default defineComponent({
         label: "用户名称",
         value: "user",
       },
-      {
-        label: "手机号码",
-        value: "phone",
-      },
+      // {
+      //   label: "手机号码",
+      //   value: "phone",
+      // },
     ]);
 
     const handleButton = (data: any) => {
@@ -183,7 +170,24 @@ export default defineComponent({
       console.log("排序规则");
     };
     const handleSelectionChange = () => {};
-
+    // 加载数据列表
+    const getData = async () => {
+      store.dispatch(`admin/${GET_ADMIN_LIST}`);
+    };
+    // 页码信息修改
+    const changeinfo = (value: number) => {
+      store.commit(`admin/${PAGE_INFO}`, { curPage: value });
+      getData();
+    };
+    // 搜索
+    const Getsreach = (value: string) => {
+      store.commit(`admin/${PAGE_INFO}`, { username: value });
+      getData();
+      // console.log(value);
+    };
+    onMounted(async () => {
+      await getData();
+    });
     return {
       tableData,
       tableLabel,
@@ -196,6 +200,10 @@ export default defineComponent({
       editorDom,
       editorData,
       currentPage: (currentPage as unknown) as number,
+      pageinfo,
+      changeinfo,
+      total,
+      Getsreach,
     };
   },
 });
