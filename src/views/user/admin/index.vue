@@ -27,6 +27,7 @@
  * @name 管理用户
  * */
 import { defineComponent, reactive, ref, computed, onMounted, ComputedRef } from "vue";
+import { ElMessageBox, ElMessage } from "element-plus";
 import Sreach from "@/components/sreach.vue";
 import ELTable from "@/components/table/table.vue";
 import Pagination from "@/components/pagination/pagination.vue";
@@ -34,6 +35,7 @@ import Editor from "./editor.vue";
 import Add from "./add.vue";
 import { useStore } from "vuex";
 import { GET_ADMIN_LIST, PAGE_INFO } from "@/store/modules/admin/type";
+import { SetStatus } from "@/utils/api";
 interface costomerData {
   tableData: any;
   loading: boolean;
@@ -156,14 +158,42 @@ export default defineComponent({
           editorFn(data.row);
           break;
         case "audit":
+          audit(data.row);
           console.log("audit");
           break;
       }
     };
+    // 编辑
     const editorFn = (row: any) => {
       editorDom.value.addFn();
       (editorData as any).value = row;
       console.log(row); // 获取到编辑的一行数据
+    };
+    // 审核
+    const audit = (row: any) => {
+      console.log(row.status);
+      let info = row.status === 1 ? "关闭账号操作？" : "进行开启账号操作？";
+      ElMessageBox.confirm(info, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          console.log(row);
+          SetStatus({
+            status: row.status === 1 ? 0 : 1,
+            id: row.id,
+          }).then((res) => {
+            row.status = row.status === 1 ? 0 : 1; // 修改本地数据
+          });
+        })
+        .catch(() => {
+          console.log(row);
+          ElMessage({
+            type: "info",
+            message: "取消修改!",
+          });
+        });
     };
     // 排序规则
     const handleSortChange = () => {
@@ -183,7 +213,6 @@ export default defineComponent({
     const Getsreach = (value: string) => {
       store.commit(`admin/${PAGE_INFO}`, { username: value });
       getData();
-      // console.log(value);
     };
     onMounted(async () => {
       await getData();

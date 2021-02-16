@@ -20,6 +20,11 @@ interface GetUserParams {
   curPage: number,
   pageSize: number,
 }
+
+interface SetStatusParams {
+  status:number,
+  id:number
+}
 // 登录
 const Login = async (params: LoginParams) => {
   return Axios('/admin/login',{
@@ -45,8 +50,18 @@ const GetList = async (params:GetUserParams) => {
     data: params
   })
 }
+
+// 修改管理员状态
+const SetStatus = async (params:SetStatusParams) => {
+  return Axios('/admin/setstatus',{
+    method: 'post',
+    responseType: 'json',
+    data: params
+  })
+}
 export {
   Login,
   AddUser,
-  GetList
+  GetList,
+  SetStatus
 }

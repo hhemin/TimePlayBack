@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.GetList = exports.AddUser = exports.Login = void 0;
+exports.SetStatus = exports.GetList = exports.AddUser = exports.Login = void 0;
 var axios_1 = require("./axios");
 // 登录
 var Login = function (params) { return __awaiter(void 0, void 0, void 0, function () {
@@ -71,3 +71,14 @@ var GetList = function (params) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.GetList = GetList;
+// 修改管理员状态
+var SetStatus = function (params) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, axios_1["default"]('/admin/setstatus', {
+                method: 'post',
+                responseType: 'json',
+                data: params
+            })];
+    });
+}); };
+exports.SetStatus = SetStatus;

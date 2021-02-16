@@ -73,9 +73,13 @@ export default defineComponent({
     const handleSubmit = async () => {
       submitLoading.value = true;
       const valid: boolean | undefined = await formRef.value?.validate();
-      Login(modelRef).then((res: any) => {
-        console.log(res);
-      });
+      Login(modelRef)
+        .then((res: any) => {
+          console.log(res);
+        })
+        .catch(() => {
+          submitLoading.value = false;
+        });
       // try {
       //   // const valid: boolean | undefined = await formRef.value ? .validate();
       //   // if (valid === true) {
