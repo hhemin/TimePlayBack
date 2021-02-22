@@ -25,6 +25,12 @@ interface SetStatusParams {
   status:number,
   id:number
 }
+
+interface FixPasswordParams {
+  password:string,
+  newpassword:string,
+  id:number,
+}
 // 登录
 const Login = async (params: LoginParams) => {
   return Axios('/admin/login',{
@@ -59,9 +65,18 @@ const SetStatus = async (params:SetStatusParams) => {
     data: params
   })
 }
+
+const FixPassword = async (params:FixPasswordParams) => {
+  return Axios('/admin/fixPassword', {
+    method: 'post',
+    responseType: 'json',
+    data: params
+  })
+}
 export {
   Login,
   AddUser,
   GetList,
-  SetStatus
+  SetStatus,
+  FixPassword
 }

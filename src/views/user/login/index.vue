@@ -33,6 +33,8 @@ import { defineComponent, reactive, ref, computed } from "vue";
 import { LoginParamsType } from "./data.d";
 import { ElForm, ElMessage } from "element-plus";
 import { Login } from "@/utils/api";
+import { useRouter } from "vue-router";
+
 interface UserLoginSetupData {
   modelRef: LoginParamsType;
   formRef: typeof ElForm;
@@ -45,6 +47,7 @@ interface UserLoginSetupData {
 export default defineComponent({
   name: "login",
   setup(): UserLoginSetupData {
+    const router = useRouter();
     // 表单值
     const modelRef = reactive<LoginParamsType>({
       username: "",
@@ -69,16 +72,22 @@ export default defineComponent({
     const formRef = ref<typeof ElForm>();
     // 登录loading
     const submitLoading = ref<boolean>(false);
+    const local = async (value: any) => {
+      return await localStorage.setItem("data", JSON.parse(value));
+    };
     // 提交
     const handleSubmit = async () => {
       submitLoading.value = true;
       const valid: boolean | undefined = await formRef.value?.validate();
-      Login(modelRef)
-        .then((res: any) => {
-          console.log(res);
+      await Login(modelRef)
+        .then(async (res: any) => {
+          localStorage.setItem("id", res.data.id);
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("username", res.data.username);
+          router.push("/");
         })
         .catch(() => {
-          submitLoading.value = false;
+          return (submitLoading.value = false);
         });
       // try {
       //   // const valid: boolean | undefined = await formRef.value ? .validate();

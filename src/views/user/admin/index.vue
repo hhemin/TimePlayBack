@@ -126,12 +126,12 @@ export default defineComponent({
       label: "操作",
       width: "200",
       options: [
-        {
-          label: "编辑",
-          type: "primary",
-          icon: "el-icon-edit",
-          methods: "editorFn",
-        },
+        // {
+        //   label: "编辑",
+        //   type: "primary",
+        //   icon: "el-icon-edit",
+        //   methods: "editorFn",
+        // },
         {
           label: "审核",
           type: "primary",
@@ -154,9 +154,9 @@ export default defineComponent({
 
     const handleButton = (data: any) => {
       switch (data.methods) {
-        case "editorFn":
-          editorFn(data.row);
-          break;
+        // case "editorFn":
+        //   editorFn(data.row);
+        //   break;
         case "audit":
           audit(data.row);
           console.log("audit");
@@ -164,11 +164,11 @@ export default defineComponent({
       }
     };
     // 编辑
-    const editorFn = (row: any) => {
-      editorDom.value.addFn();
-      (editorData as any).value = row;
-      console.log(row); // 获取到编辑的一行数据
-    };
+    // const editorFn = (row: any) => {
+    //   editorDom.value.addFn();
+    //   (editorData as any).value = row;
+    //   console.log(row); // 获取到编辑的一行数据
+    // };
     // 审核
     const audit = (row: any) => {
       console.log(row.status);
